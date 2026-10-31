@@ -1,0 +1,10 @@
+{
+  "name": "Rotated surface Z memory: distance scaling",
+  "code": "surface_z",
+  "distances": [3, 5, 7],
+  "physical_error_rates": [0.001, 0.005],
+  "rounds": 5,
+  "shots": 10000,
+  "seed": 42,
+  "decoders": ["mwpm", "identity"]
+}

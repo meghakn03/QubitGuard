@@ -1,0 +1,39 @@
+name: QubitGuard checks
+on: [push, pull_request]
+jobs:
+  science-and-api:
+    runs-on: ubuntu-latest
+    env:
+      MPLCONFIGDIR: /tmp/matplotlib
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - run: pip install -r requirements.lock && pip install --no-deps -e .
+      - run: pytest -q
+      - run: qubitguard-benchmark benchmarks/surface-scaling.json --output data/ci-surface.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: surface-benchmark
+          path: data/ci-surface.json
+  dashboard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+        working-directory: frontend
+      - run: npm run build
+        working-directory: frontend
+  containers:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker compose config --quiet
+      - run: docker compose build

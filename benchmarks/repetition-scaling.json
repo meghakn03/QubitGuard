@@ -1,0 +1,10 @@
+{
+  "name": "Repetition memory: distance scaling",
+  "code": "repetition",
+  "distances": [3, 5, 7],
+  "physical_error_rates": [0.01, 0.03, 0.05],
+  "rounds": 5,
+  "shots": 100000,
+  "seed": 42,
+  "decoders": ["mwpm", "majority", "identity"]
+}

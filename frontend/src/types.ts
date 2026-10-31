@@ -1,0 +1,4 @@
+export type Config = {name:string;code:'repetition'|'surface_x'|'surface_z';distances:number[];physical_error_rates:number[];rounds:number;shots:number;seed:number;decoders:string[]};
+export type Decoder = {decoder:string;failures:number;logical_error_rate:number;confidence_interval:[number,number];mean_decode_us:number;batch_mean_p50_us:number;batch_mean_p95_us:number;batches:number};
+export type Cell = {distance:number;physical_error_rate:number;seed:number;shots:number;detectors:number;coordinates:Record<string,number[]>;samples:{shot:number;events:number[];actual:number;predictions:Record<string,number>}[];decoders:Decoder[]};
+export type Run = {id:string;created_at:string;status:string;config:Config;progress:number;error:string|null;result?:{config:Config;results:Cell[];provenance:{versions:Record<string,string>;elapsed_seconds:number;noise_model:string;timing_definition:string;platform:string;python:string;batch_size:number}}};

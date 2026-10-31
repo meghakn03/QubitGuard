@@ -1,0 +1,7 @@
+.git
+.venv
+frontend
+notebooks
+data
+**/__pycache__
+.pytest_cache
