@@ -37,3 +37,7 @@ jobs:
       - uses: actions/checkout@v4
       - run: docker compose config --quiet
       - run: docker compose build
+      - run: docker compose up -d --wait
+      - run: python scripts/smoke_compose.py
+      - if: always()
+        run: docker compose down

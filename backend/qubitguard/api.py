@@ -13,7 +13,7 @@ from .engine import build_circuit, run_experiment
 from .models import ExperimentConfig
 from .store import Store
 
-logger = logging.getLogger("qubitguard")
+logger = logging.getLogger("uvicorn.error.qubitguard")
 
 
 def create_app(db_path=None):

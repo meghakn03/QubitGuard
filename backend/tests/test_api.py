@@ -45,3 +45,36 @@ def test_recover_interrupted_jobs(tmp_path):
     store.recover()
     assert store.get(key)['status'] == 'failed'
     assert 'restarted' in store.get(key)['error']
+
+
+def test_queue_limit_and_failed_jobs(tmp_path, monkeypatch):
+    import threading
+    import qubitguard.api as api_module
+    entered = threading.Event()
+    release = threading.Event()
+
+    def fail_after_release(config, progress):
+        entered.set()
+        assert release.wait(timeout=10)
+        raise RuntimeError('test internal detail')
+
+    monkeypatch.setattr(api_module, 'run_experiment', fail_after_release)
+    with TestClient(create_app(str(tmp_path / 'queue.sqlite'))) as client:
+        try:
+            ids = []
+            for _ in range(4):
+                response = client.post('/api/experiments', json={'distances':[3], 'physical_error_rates':[0.01], 'shots':100})
+                assert response.status_code == 202
+                ids.append(response.json()['id'])
+            assert entered.wait(timeout=2)
+            assert client.post('/api/experiments', json={}).status_code == 429
+            assert client.get(f'/api/experiments/{ids[0]}/export').status_code == 409
+        finally:
+            release.set()
+        for _ in range(200):
+            items = [client.get('/api/experiments/' + key).json() for key in ids]
+            if all(item['status'] == 'failed' for item in items):
+                break
+            time.sleep(0.01)
+        assert all(item['status'] == 'failed' for item in items)
+        assert all('internal detail' not in item['error'] for item in items)
