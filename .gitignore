@@ -11,3 +11,6 @@ data/*
 .venv*/
 *.egg-info/
 *.tsbuildinfo
+# Local document artifacts
+/output/
+/tmp/
