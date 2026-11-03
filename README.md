@@ -1,3 +1,5 @@
+**Tech stack:** Python, Stim, PyMatching, FastAPI, React, TypeScript, Tailwind CSS, Plotly, SQLite, Docker Compose
+
 # QubitGuard
 
 **Quantum Error Correction Simulator & Decoder Benchmarking Platform**
